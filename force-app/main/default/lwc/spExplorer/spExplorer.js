@@ -6,6 +6,7 @@ const METHOD_POST   = 'POST';
 const METHOD_GET    = 'GET';
 const BEARER_STRING = 'Bearer ';
 const FILE_SELECTOR = '@microsoft.graph.downloadUrl';
+const ROOT_NAME     = 'Shared Documents';
 export default class SpExplorer extends LightningElement {
     someData = [];
     hasErrors = false;
@@ -15,6 +16,7 @@ export default class SpExplorer extends LightningElement {
     accessToken;
     parentDirectory;
     currentFolderId = 'root';
+    isRoot = true;
     datatableColumns = [
         {label: 'Name', type:'customName', typeAttributes: {isFolder: {fieldName: 'isFolder'}, folderName: {fieldName: 'name'}, fileId:{fieldName:'id'}, eTag: {fieldName: 'eTag'}}},
         {label: 'Created By', fieldName:'createdBy'},
@@ -23,6 +25,8 @@ export default class SpExplorer extends LightningElement {
             typeAttributes:{recId:{fieldName:'name'}, fileId:{fieldName:'id'}, eTag: {fieldName: 'eTag'}}
         }
     ]
+    
+
 
     filesToUpload = [];
     connectedCallback(){
@@ -30,11 +34,16 @@ export default class SpExplorer extends LightningElement {
       this.getAccessToken();
     }
     
+    get showBackButton(){
+      return this.currentFolderId == 'root' || this.isRoot; 
+    }
+
     handleFileClick(event){
         this.showLoadingSpinner = true;
         var isFolder = event.detail.fileFolderObj.folderType;
         var folderId = event.detail.fileFolderObj.fileId;
         if(isFolder){
+          this.isRoot = false;
           this.getSpecificFolderData(folderId);
         }else{
           this.downloadFile(folderId);
@@ -90,6 +99,7 @@ export default class SpExplorer extends LightningElement {
     }
 
     getSpecificFolderData(folderId){
+      
       this.currentFolderId = folderId;
       var url = this.graphUrl + this.driveId + '/items/' + folderId +'/children';
       var headers = {
@@ -130,7 +140,9 @@ export default class SpExplorer extends LightningElement {
         dataObj.isFolder = file.folder == undefined || file.folder==null ? false: true;
         dataObj.id = file.id;
         dataObj.eTag = file.eTag;
-        this.parentDirectory = file.parentReference.id;
+        if(file.parentReference.name == ROOT_NAME){
+          this.isRoot = true;
+        }
         finalData.push(dataObj);
       })
       
@@ -198,6 +210,8 @@ export default class SpExplorer extends LightningElement {
         console.log('PRID ', data.parentReference.id);
         if(data.parentReference.id != undefined){
           this.getSpecificFolderData(data.parentReference.id);
+        }else{
+          this.isRoot = true;
         }
       })
       .catch(error => {
