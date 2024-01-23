@@ -32,12 +32,8 @@ export default class SpExplorer extends LightningElement {
     
     handleFileClick(event){
         this.showLoadingSpinner = true;
-        console.log(event.detail.fileFolderObj.folderName);
         var isFolder = event.detail.fileFolderObj.folderType;
         var folderId = event.detail.fileFolderObj.fileId;
-        console.log(event.detail.fileFolderObj.fileId);
-        console.log(event.detail.fileFolderObj.eTag);
-        console.log(event.detail.fileFolderObj.folderType);
         if(isFolder){
           this.getSpecificFolderData(folderId);
         }else{

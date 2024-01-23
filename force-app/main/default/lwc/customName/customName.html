@@ -2,13 +2,13 @@
     <div style="display:flex">
         <div>
             <template if:true={isFolder}>
-                <lightning-icon icon-name="utility:open_folder" alternative-text="Folder" title="Folder" class="slds-p-around_x-small" size="x-small"></lightning-icon>
+                <lightning-icon icon-name="utility:open_folder" alternative-text="Folder" title="Folder" class="slds-p-around_x-small folderIcon" size="x-small"></lightning-icon>
             </template>
             <template if:false={isFolder}>
-                <lightning-icon icon-name="utility:file" alternative-text="File" title="File" class="slds-p-around_x-small" size="x-small"></lightning-icon>
+                <lightning-icon icon-name="utility:file" alternative-text="File" title="File" class="slds-p-around_x-small fileIcon" size="x-small"></lightning-icon>
             </template>
         </div>
-        <div onclick={handleNameLinkClick} class="slds-p-around_x-small">
+        <div onclick={handleNameLinkClick} class="slds-p-around_x-small slds-text-link_reset slds-text-link">
             {folderName}
         </div>
     </div>
