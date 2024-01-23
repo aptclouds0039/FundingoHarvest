@@ -1,6 +1,10 @@
 import { LightningElement } from 'lwc';
 import getToken from '@salesforce/apex/MicrosoftAuthentication.getToken';
-
+const ERROR_MSG     = 'ERROR';
+const METHOD_PUT    = 'PUT';
+const METHOD_POST   = 'POST';
+const METHOD_GET    = 'GET';
+const BEARER_STRING = 'Bearer ';
 export default class SpExplorer extends LightningElement {
     someData = [];
     hasErrors = false;
@@ -21,7 +25,6 @@ export default class SpExplorer extends LightningElement {
     filesToUpload = [];
     connectedCallback(){
         this.getAccessToken();
-        //this.processData();
     }
     
     handleFileClick(event){
@@ -44,8 +47,8 @@ export default class SpExplorer extends LightningElement {
         console.log('Data ' + JSON.stringify(data));
         this.driveId = data.driveId;
         this.graphUrl = data.graphURL;
-        this.getFolderData(data.access_token);
         this.accessToken = data.access_token;
+        this.getFolderData();
       })
       .catch(error => {
         this.hasErrors = true;
@@ -53,36 +56,33 @@ export default class SpExplorer extends LightningElement {
     }
 
     handleBackClick(event){
-      
       this.requestParentFolder(this.currentFolderId);
-      
     }
-    getFolderData(token){
+    getFolderData(){
       var url = this.graphUrl + this.driveId + '/root/children';
-        var headers = {
-          'Authorization': 'Bearer '+ token
-        };
+      var headers = {
+        Authorization: BEARER_STRING + this.accessToken
+      };
 
-        fetch(url, {
-          method: 'GET',
-          headers: headers
-        })
-        .then(response => {
-          if (!response.ok) {
-            return 'ERROR';
-          }
-          return response.json();
-        })
-        .then(data => {
-          if(data == 'ERROR'){
-            return;
-          }
-          this.processFolderData(data);
-          
-        })
-        .catch(error => {
-          console.error('Fetch Error:', error);
-        });
+      fetch(url, {
+        method: METHOD_GET,
+        headers: headers
+      })
+      .then(response => {
+        if (!response.ok) {
+          return ERROR_MSG;
+        }
+        return response.json();
+      })
+      .then(data => {
+        if(data == ERROR_MSG){
+          return;
+        }
+        this.processFolderData(data);  
+      })
+      .catch(error => {
+        console.error('Fetch Error:', error);
+      });
     }
 
     getSpecificFolderData(folderId){
@@ -116,8 +116,6 @@ export default class SpExplorer extends LightningElement {
 
     processFolderData(data){
       var finalData = [];
-      console.log('Response:', data);
-      var pd = [];
       data.value.forEach(file => {
         var dataObj = {};
         dataObj.createdBy = file.createdBy.user.displayName;
@@ -128,7 +126,6 @@ export default class SpExplorer extends LightningElement {
         dataObj.eTag = file.eTag;
         this.parentDirectory = file.parentReference.id;
         finalData.push(dataObj);
-        
       })
       
       this.someData = finalData;
