@@ -1,0 +1,11 @@
+.folderIcon{
+    --sds-c-icon-color-foreground-default: rgba(11, 92, 171, 1);
+    --slds-c-icon-color-foreground: rgba(11, 92, 171, 1);
+    --sds-c-icon-color-background: white;
+}
+
+.fileIcon{
+    --sds-c-icon-color-foreground-default: rgba(11, 92, 171, 1);
+    --slds-c-icon-color-foreground: rgba(11, 92, 171, 1);
+    --sds-c-icon-color-background: white;
+}
