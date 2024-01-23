@@ -1,0 +1,10 @@
+<template>
+    <template if:true={getFolder}>
+
+        <lightning-icon icon-name="utility:open_folder" alternative-text="Folder" title="Folder" class="slds-p-around_x-small" size="x-small"></lightning-icon>
+    </template>
+    <template if:false={getFolder}>
+
+        <lightning-icon icon-name="utility:file" alternative-text="File" title="File" class="slds-p-around_x-small" size="x-small"></lightning-icon>
+    </template>
+</template>

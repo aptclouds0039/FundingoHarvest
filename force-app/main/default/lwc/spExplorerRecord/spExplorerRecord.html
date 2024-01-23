@@ -1,0 +1,40 @@
+<template>
+    <lightning-card icon-name="standard:account" variant="base">
+      <div slot="title">
+          Sharepoint Explorer
+      </div>
+      <div slot="actions">
+        
+      </div>
+      <div slot="footer">
+    
+      </div>
+      <div>
+        <template if:true={hasFolderId}>
+            <div>
+                <template if:false={showBackButton}>
+                    <lightning-button label="Back" onclick={handleBackClick}></lightning-button>
+                </template>
+                <lightning-input type="file" onchange={addFiles} ></lightning-input>
+                <lightning-button label="Upload" onclick={uploadFiles}></lightning-button>
+              </div>
+        </template>
+        
+        <template if:true={hasFolderId}>
+            <div class="dataTableWrapper slds-p-around_xx-small">
+                <c-custom-datatable
+                    onviewfile={handleFileClick}
+                    key-field="id"
+                    data={someData}
+                    columns={datatableColumns}
+                ></c-custom-datatable>
+            </div>
+        </template>
+        <template if:false={hasFolderId}>
+            <lightning-button label="Create Sharepoint Folder" onclick={creaetSharepointFolder}></lightning-button>
+        </template>
+        
+      </div>
+    </lightning-card>
+    
+</template>
