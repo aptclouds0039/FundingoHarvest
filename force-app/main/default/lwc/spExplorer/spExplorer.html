@@ -37,6 +37,12 @@
         </div>
       </div>
     </lightning-card>
+    <template if:true={showLoadingSpinner}>
+      <div class="exampleHolder">
+        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+      </div>
+    </template>
+    
     
 </template>
 

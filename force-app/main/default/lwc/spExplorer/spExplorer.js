@@ -5,9 +5,11 @@ const METHOD_PUT    = 'PUT';
 const METHOD_POST   = 'POST';
 const METHOD_GET    = 'GET';
 const BEARER_STRING = 'Bearer ';
+const FILE_SELECTOR = '@microsoft.graph.downloadUrl';
 export default class SpExplorer extends LightningElement {
     someData = [];
     hasErrors = false;
+    showLoadingSpinner = false;
     driveId;
     graphUrl;
     accessToken;
@@ -24,10 +26,12 @@ export default class SpExplorer extends LightningElement {
 
     filesToUpload = [];
     connectedCallback(){
-        this.getAccessToken();
+      this.showLoadingSpinner = true;
+      this.getAccessToken();
     }
     
     handleFileClick(event){
+        this.showLoadingSpinner = true;
         console.log(event.detail.fileFolderObj.folderName);
         var isFolder = event.detail.fileFolderObj.folderType;
         var folderId = event.detail.fileFolderObj.fileId;
@@ -52,10 +56,12 @@ export default class SpExplorer extends LightningElement {
       })
       .catch(error => {
         this.hasErrors = true;
+        this.showLoadingSpinner = false;
       })
     }
- 
+
     handleBackClick(event){
+      this.showLoadingSpinner = true;
       this.requestParentFolder(this.currentFolderId);
     }
     getFolderData(){
@@ -76,34 +82,37 @@ export default class SpExplorer extends LightningElement {
       })
       .then(data => {
         if(data == ERROR_MSG){
+          this.showLoadingSpinner = false;
           return;
         }
         this.processFolderData(data);  
       })
       .catch(error => {
         console.error('Fetch Error:', error);
+        this.showLoadingSpinner = false;
       });
     }
 
     getSpecificFolderData(folderId){
       this.currentFolderId = folderId;
-      var url = 'https://graph.microsoft.com/v1.0/drives/b%21CVdKX821UEuzn-l9uZHsxjwMwyQd-g9CsMkaI8vhpxP39bNWl7NLQa626medTHBO/items/' + folderId +'/children';
+      var url = this.graphUrl + this.driveId + '/items/' + folderId +'/children';
       var headers = {
-        'Authorization': 'Bearer '+ this.accessToken
+        Authorization: BEARER_STRING+ this.accessToken
       };
 
       fetch(url, {
-        method: 'GET',
+        method: METHOD_GET,
         headers: headers
       })
       .then(response => {
         if (!response.ok) {
-          return 'ERROR';
+          return ERROR_MSG;
         }
         return response.json();
       })
       .then(data => {
-        if(data == 'ERROR'){
+        if(data == ERROR_MSG){
+          this.showLoadingSpinner = false;
           return;
         }
         this.processFolderData(data);
@@ -111,6 +120,7 @@ export default class SpExplorer extends LightningElement {
       })
       .catch(error => {
         console.error('Fetch Error:', error);
+        this.showLoadingSpinner = false;
       });
     }
 
@@ -129,32 +139,36 @@ export default class SpExplorer extends LightningElement {
       })
       
       this.someData = finalData;
+      this.showLoadingSpinner = false;
     }
 
     downloadFile(fileId){
-      var url = 'https://graph.microsoft.com/v1.0/drives/b%21CVdKX821UEuzn-l9uZHsxjwMwyQd-g9CsMkaI8vhpxP39bNWl7NLQa626medTHBO/items/' + fileId +'?select=id,@microsoft.graph.downloadUrl';
+      var url = this.graphUrl + this.driveId + '/items/' + fileId +'?select=id,' + FILE_SELECTOR;
       var headers = {
-        'Authorization': 'Bearer '+ this.accessToken
+        Authorization: BEARER_STRING+ this.accessToken
       };
 
       fetch(url, {
-        method: 'GET',
+        method: METHOD_GET,
         headers: headers
       })
       .then(response => {
         if (!response.ok) {
-          return 'ERROR';
+          return ERROR_MSG;
         }
         return response.json();
       })
       .then(data => {
-        if(data == 'ERROR'){
+        if(data == ERROR_MSG){
+          this.showLoadingSpinner = false;
           return;
         }
-        window.open(data['@microsoft.graph.downloadUrl']);
+        window.open(data[FILE_SELECTOR]);
+        this.showLoadingSpinner = false;
       })
       .catch(error => {
         console.error('Fetch Error:', error);
+        this.showLoadingSpinner = false;
       });
 
       
@@ -162,35 +176,37 @@ export default class SpExplorer extends LightningElement {
 
     requestParentFolder(currentId){
       console.log('Cur Id ' + currentId);
-      var url = 'https://graph.microsoft.com/v1.0/drives/b%21CVdKX821UEuzn-l9uZHsxjwMwyQd-g9CsMkaI8vhpxP39bNWl7NLQa626medTHBO/items/'+currentId;
+      var url = this.graphUrl + this.driveId + '/items/' +currentId;
       var headers = {
-        'Authorization': 'Bearer '+ this.accessToken
+        Authorization: BEARER_STRING+ this.accessToken
       };
 
       fetch(url, {
-        method: 'GET',
+        method: METHOD_GET,
         headers: headers
       })
       .then(response => {
         if (!response.ok) {
           console.log('First Check failed');
+          this.showLoadingSpinner = false;
           return response.json();
         }
         return response.json();
       })
       .then(data => {
+        this.showLoadingSpinner = false;
         if(data == 'ERROR'){
           console.log('Second Check failed');
           return;
         }
         console.log('PRID ', data.parentReference.id);
         if(data.parentReference.id != undefined){
-
           this.getSpecificFolderData(data.parentReference.id);
         }
       })
       .catch(error => {
         console.error('Fetch Error:', error);
+        this.showLoadingSpinner = false;
       });
     }
 
@@ -210,16 +226,16 @@ export default class SpExplorer extends LightningElement {
     }
 
     uploadFiles(event){
+      this.showLoadingSpinner = true;
       console.log('FIels ' , this.filesToUpload);
       this.filesToUpload.forEach(file => {
         var  formData = new FormData();
         formData.append('file', file);
-        var url = 'https://graph.microsoft.com/v1.0/drives/b!CVdKX821UEuzn-l9uZHsxjwMwyQd-g9CsMkaI8vhpxP39bNWl7NLQa626medTHBO/items/' + this.currentFolderId + ':/' + file.name + ':/content';
+        var url = this.graphUrl + this.driveId + '/items/' + this.currentFolderId + ':/' + file.name + ':/content';
         fetch(url, {
-          method: 'PUT',
+          method: METHOD_PUT,
             headers: {
-                'Authorization': 'Bearer ' + this.accessToken,
-                // Replace YOUR_ACCESS_TOKEN with the actual access token
+                Authorization: BEARER_STRING + this.accessToken,
                 'Content-Type': file.type,
             },
             body: formData,
@@ -229,9 +245,11 @@ export default class SpExplorer extends LightningElement {
         })
         .then(data => {
           console.log('Data ' + data);
+          this.showLoadingSpinner = false;
         })
       })
       this.filesToUpload = [];
+      
       
       
     }
