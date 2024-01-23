@@ -54,7 +54,7 @@ export default class SpExplorer extends LightningElement {
         this.hasErrors = true;
       })
     }
- 
+
     handleBackClick(event){
       this.requestParentFolder(this.currentFolderId);
     }
