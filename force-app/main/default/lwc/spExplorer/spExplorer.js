@@ -11,6 +11,7 @@ export default class SpExplorer extends LightningElement {
     someData = [];
     hasErrors = false;
     showLoadingSpinner = false;
+    showFileUploadModal = false;
     driveId;
     graphUrl;
     accessToken;
@@ -40,6 +41,14 @@ export default class SpExplorer extends LightningElement {
     
     get showBackButton(){
       return this.currentFolderId == 'root' || this.currentFolderId == this.rootId; 
+    }
+
+    openFileUploadModal(){
+      this.showFileUploadModal = true;
+    }
+
+    closeFileUploadModal(){
+      this.showFileUploadModal = false;
     }
 
     handleFileClick(event){
@@ -256,6 +265,7 @@ export default class SpExplorer extends LightningElement {
     }
 
     uploadFiles(event){
+      this.showFileUploadModal = false;
       this.showLoadingSpinner = true;
       console.log('FIels ' , this.filesToUpload);
       this.filesToUpload.forEach(file => {
@@ -275,7 +285,8 @@ export default class SpExplorer extends LightningElement {
         })
         .then(data => {
           console.log('Data ' + data);
-          this.showLoadingSpinner = false;
+          
+          this.getSpecificFolderData(this.currentFolderId);
         })
       })
       this.filesToUpload = [];
