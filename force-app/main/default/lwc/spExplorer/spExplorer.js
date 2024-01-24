@@ -17,6 +17,10 @@ export default class SpExplorer extends LightningElement {
     currentFolderId = 'root';
     rootId;
     isRoot = true;
+    folderHeirarchy = [{
+      id: 'root',
+      name: 'Root',
+    }]
     datatableColumns = [
         {label: 'Name', type:'customName', typeAttributes: {isFolder: {fieldName: 'isFolder'}, folderName: {fieldName: 'name'}, fileId:{fieldName:'id'}, eTag: {fieldName: 'eTag'}}},
         {label: 'Created By', fieldName:'createdBy'},
@@ -42,14 +46,28 @@ export default class SpExplorer extends LightningElement {
         this.showLoadingSpinner = true;
         var isFolder = event.detail.fileFolderObj.folderType;
         var folderId = event.detail.fileFolderObj.fileId;
+        var folderName = event.detail.fileFolderObj.folderName;
         if(isFolder){
           this.isRoot = false;
+          this.folderHeirarchy.push({
+            id: folderId,
+            name: folderName
+          })
           this.getSpecificFolderData(folderId);
         }else{
           this.downloadFile(folderId);
         }
         
     }
+
+    handleBreadCrumbClick(event){
+      this.showLoadingSpinner = true;
+      var lengthToKeep = Number(event.target.dataset.key) + 1;
+      var folderId = event.target.dataset.id;
+      this.folderHeirarchy.length = lengthToKeep;
+      this.getSpecificFolderData(folderId);
+    }
+    
     getAccessToken(){
       getToken()
       .then(data => {
@@ -67,6 +85,7 @@ export default class SpExplorer extends LightningElement {
 
     handleBackClick(event){
       this.showLoadingSpinner = true;
+      this.folderHeirarchy.pop();
       this.requestParentFolder(this.currentFolderId);
     }
     getFolderData(){
@@ -132,6 +151,7 @@ export default class SpExplorer extends LightningElement {
 
     processFolderData(data){
       var finalData = [];
+      var runOnce = false;
       data.value.forEach(file => {
         var dataObj = {};
         dataObj.createdBy = file.createdBy.user.displayName;
@@ -259,8 +279,5 @@ export default class SpExplorer extends LightningElement {
         })
       })
       this.filesToUpload = [];
-      
-      
-      
     }
 }
