@@ -30,6 +30,15 @@
         </div>
       </div>
       <div>
+        <div class="slds-grid slds-wrap slds-var-p-around_medium">
+          <lightning-breadcrumbs>
+            <template for:each={folderHeirarchy} for:item="folder" for:index="folderIndex">
+              <lightning-breadcrumb label={folder.name} data-id={folder.id} key={id} data-key={folderIndex} style="font-size: 17px;" class="slds-text-link_reset slds-text-link slds-p-left_medium" onclick={handleBreadCrumbClick}></lightning-breadcrumb>
+            </template>
+          </lightning-breadcrumbs>
+          
+        </div>
+        <!-- Slot to implement folder struture -->
       </div>
 
       <div class="dataTableWrapper slds-p-around_xx-small">
@@ -52,7 +61,7 @@
 </template>
 
 <!-- To Do Tasks
-   1. Implement Folder breadcrumb structure
+   1. Implement Folder breadcrumb structure -- Done
    2. Everything constant moved to top -- Done
    3. Everything confidential moved to metadata -- Done
    4. Name of file file uploaded to be shown
@@ -66,8 +75,11 @@
 -->
 
 <!-- 
-  We get Id of root Id when it is run first time.
-  Store it in a variable
-  Everytime we get folderData, check if current Id is equal to rootId
+  Folder Structure Implementation >>
+  1. Create a list to store all folder structures
+  2. In start add root to the list, with name index and id as root
+  3. When we click on folder, add name folder Id, and other details to the list
+  4. When back is clicked, pop last element from the list
+  5. When a specific folder is clicked in the bc, get the index of that element and remove other elements right to it.
 
  -->
