@@ -107,11 +107,15 @@
 -->
 
 <!-- 
-  Folder Structure Implementation >>
-  1. Create a list to store all folder structures
-  2. In start add root to the list, with name index and id as root
-  3. When we click on folder, add name folder Id, and other details to the list
-  4. When back is clicked, pop last element from the list
-  5. When a specific folder is clicked in the bc, get the index of that element and remove other elements right to it.
+  OAuth2.0 Flow Implementation ---
+  1. Get Client Id From Apex
+  2. Use ClientId to redirect user to Microsoft Authentication site
+  3. Redirect user back to LWC Page, check if we have credentials in URL, use those credentials in Apex to get Access Token
+  4. Use Access Token for further functioning.
 
+  Open Questions -
+  1. Store Access Token somewhere.
+  2. Check if token is expired.
+  3. If not expired, then get access token again for Same User.
+  4. Then run rest of the flow.
  -->
