@@ -17,6 +17,7 @@ export default class SpExplorer extends LightningElement {
     accessToken;
     currentFolderId = 'root';
     rootId;
+    addedFilesNames = [];
     isRoot = true;
     folderHeirarchy = [{
       id: 'root',
@@ -43,12 +44,18 @@ export default class SpExplorer extends LightningElement {
       return this.currentFolderId == 'root' || this.currentFolderId == this.rootId; 
     }
 
+    get addedFiles(){
+      return this.addedFilesNames;
+    }
+
     openFileUploadModal(){
       this.showFileUploadModal = true;
     }
 
     closeFileUploadModal(){
       this.showFileUploadModal = false;
+      this.filesToUpload = [];
+      this.addedFilesNames = [];
     }
 
     handleFileClick(event){
@@ -259,6 +266,8 @@ export default class SpExplorer extends LightningElement {
             continue;
         }
         var file = files[key];
+        this.addedFilesNames = [...this.addedFilesNames, file.name];
+        console.log('Added Files' + this.addedFilesNames);
         this.filesToUpload.push(file);
         console.log('FIels ' , this.filesToUpload);
       }
@@ -268,27 +277,34 @@ export default class SpExplorer extends LightningElement {
       this.showFileUploadModal = false;
       this.showLoadingSpinner = true;
       console.log('FIels ' , this.filesToUpload);
+      const fetchPromises = [];
       this.filesToUpload.forEach(file => {
         var  formData = new FormData();
         formData.append('file', file);
         var url = this.graphUrl + this.driveId + '/items/' + this.currentFolderId + ':/' + file.name + ':/content';
-        fetch(url, {
-          method: METHOD_PUT,
-            headers: {
-                Authorization: BEARER_STRING + this.accessToken,
-                'Content-Type': file.type,
-            },
-            body: formData,
-        })
-        .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          console.log('Data ' + data);
-          
-          this.getSpecificFolderData(this.currentFolderId);
-        })
+        fetchPromises.push(
+          fetch(url, {
+            method: METHOD_PUT,
+              headers: {
+                  Authorization: BEARER_STRING + this.accessToken,
+                  'Content-Type': file.type,
+              },
+              body: formData,
+          })
+          .then(res => {
+            return res.json();
+          })
+          .then(data => {
+            console.log('Data ' + data);
+          })
+        );
+      });
+      Promise.all(fetchPromises)
+      .then(res => {
+        this.filesToUpload = [];
+        this.addedFilesNames = [];
+        this.getSpecificFolderData(this.currentFolderId);
       })
-      this.filesToUpload = [];
+      
     }
 }
