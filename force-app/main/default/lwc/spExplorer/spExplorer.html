@@ -1,49 +1,52 @@
 <template>
-    <lightning-card icon-name="standard:account" variant="base">
-      <div slot="title">
-          Sharepoint Explorer
-      </div>
-      <div slot="actions">
+  <lightning-card icon-name="standard:account" variant="base">
+    <div slot="title">
+      Sharepoint Explorer
+    </div>
+    <div slot="actions">
         
-      </div>
-      <div slot="footer">
+    </div>
+    <div slot="footer">
     
+    </div>
+    <div>
+      <div class="slds-grid slds-wrap">
+        <template if:false={showBackButton}>
+          <div class="slds-col slds-size_1-of-12">
+            <div class="slds-align_absolute-center" style="height:5rem">
+              <lightning-button label="Back" onclick={handleBackClick}></lightning-button>
+            </div>
+          </div>
+        </template>
+        <div class="slds-col slds-size_2-of-12">
+          <div class="slds-align_absolute-center" style="height:5rem;">
+            <lightning-input type="file" onchange={addFiles} style="margin-bottom: 6%;"></lightning-input>
+          </div>
+        </div>
+        <div class="slds-col slds-size_1-of-12">
+          <div class="slds-align_absolute-center" style="height:5rem">
+            <lightning-button label="Upload" onclick={uploadFiles}></lightning-button>
+          </div>
+        </div>
       </div>
       <div>
-        <div class="slds-grid slds-wrap slds-align_absolute-center">
-          <div class="slds-col slds-size_1-of-12">
-            <template if:false={showBackButton}>
-              <lightning-button label="Back" onclick={handleBackClick} class="slds-align_absolute-center slds-wrap"></lightning-button>
-            </template>
-          </div>
-          <div class="slds-col slds-size_2-of-12">
-            <lightning-input type="file" onchange={addFiles} class="slds-align_absolute-center"></lightning-input>
-          </div>
-          <div class="slds-col slds-size_1-of-12">
-            <lightning-button label="Upload" onclick={uploadFiles} class="slds-align_absolute-center"></lightning-button>
-          </div>
-        </div>
-        <div>
-          
-          
-          
-        </div>
+      </div>
 
-        <div class="dataTableWrapper slds-p-around_xx-small">
-            <c-custom-datatable
-                onviewfile={handleFileClick}
-                key-field="id"
-                data={someData}
-                columns={datatableColumns}
-            ></c-custom-datatable>
-        </div>
+      <div class="dataTableWrapper slds-p-around_xx-small">
+        <c-custom-datatable
+          onviewfile={handleFileClick}
+          key-field="id"
+          data={someData}
+          columns={datatableColumns}
+        ></c-custom-datatable>
       </div>
-    </lightning-card>
-    <template if:true={showLoadingSpinner}>
-      <div class="exampleHolder">
-        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
-      </div>
-    </template>
+    </div>
+  </lightning-card>
+  <template if:true={showLoadingSpinner}>
+    <div class="exampleHolder">
+      <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+    </div>
+  </template>
     
     
 </template>
@@ -56,8 +59,15 @@
    5. Multiple file uploads
    6. Refresh after file is uploaded
    7. New folder button
-   8. Spinner
+   8. Spinner  -- Done
    9. Latest data to be shown. 
   10. Use Cleaner Code
   11. UX improvement in folder name and Icon -- Done
 -->
+
+<!-- 
+  We get Id of root Id when it is run first time.
+  Store it in a variable
+  Everytime we get folderData, check if current Id is equal to rootId
+
+ -->

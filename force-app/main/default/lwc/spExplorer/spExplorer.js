@@ -14,8 +14,8 @@ export default class SpExplorer extends LightningElement {
     driveId;
     graphUrl;
     accessToken;
-    parentDirectory;
     currentFolderId = 'root';
+    rootId;
     isRoot = true;
     datatableColumns = [
         {label: 'Name', type:'customName', typeAttributes: {isFolder: {fieldName: 'isFolder'}, folderName: {fieldName: 'name'}, fileId:{fieldName:'id'}, eTag: {fieldName: 'eTag'}}},
@@ -35,7 +35,7 @@ export default class SpExplorer extends LightningElement {
     }
     
     get showBackButton(){
-      return this.currentFolderId == 'root' || this.isRoot; 
+      return this.currentFolderId == 'root' || this.currentFolderId == this.rootId; 
     }
 
     handleFileClick(event){
@@ -140,8 +140,8 @@ export default class SpExplorer extends LightningElement {
         dataObj.isFolder = file.folder == undefined || file.folder==null ? false: true;
         dataObj.id = file.id;
         dataObj.eTag = file.eTag;
-        if(file.parentReference.name == ROOT_NAME){
-          this.isRoot = true;
+        if(this.currentFolderId == 'root'){
+          this.rootId = file.parentReference.id;
         }
         finalData.push(dataObj);
       })
