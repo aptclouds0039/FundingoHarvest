@@ -10,32 +10,28 @@
     
     </div>
     <div>
-      <div class="slds-grid slds-wrap">
-        <template if:false={showBackButton}>
-          <div class="slds-col slds-size_1-of-12">
-            <div class="slds-align_absolute-center" style="height:5rem">
-              <lightning-button label="Back" onclick={handleBackClick}></lightning-button>
-            </div>
-          </div>
-        </template>
-        <div class="slds-col slds-size_2-of-12">
-          <div class="slds-align_absolute-center" style="height:5rem;">
-            <lightning-input type="file" onchange={addFiles} style="margin-bottom: 6%;"></lightning-input>
-          </div>
-        </div>
-        <div class="slds-col slds-size_1-of-12">
-          <div class="slds-align_absolute-center" style="height:5rem">
-            <lightning-button label="Upload" onclick={uploadFiles}></lightning-button>
-          </div>
-        </div>
-      </div>
       <div>
-        <div class="slds-grid slds-wrap slds-var-p-around_medium">
-          <lightning-breadcrumbs>
-            <template for:each={folderHeirarchy} for:item="folder" for:index="folderIndex">
-              <lightning-breadcrumb label={folder.name} data-id={folder.id} key={id} data-key={folderIndex} style="font-size: 17px;" class="slds-text-link_reset slds-text-link slds-p-left_medium" onclick={handleBreadCrumbClick}></lightning-breadcrumb>
-            </template>
-          </lightning-breadcrumbs>
+        <div class="slds-grid slds-wrap slds-var-p-around_medium slds-grid_align-spread slds-grid_vertical-stretch">
+          <div class="slds-col slds-grid slds-wrap">
+            <div class="slds-align_absolute-center">
+              <lightning-breadcrumbs>
+                <template for:each={folderHeirarchy} for:item="folder" for:index="folderIndex" >
+                  <lightning-breadcrumb label={folder.name} data-id={folder.id} key={id} data-key={folderIndex} style="font-size: 17px;" class="slds-text-link_reset slds-text-link slds-p-left_medium" onclick={handleBreadCrumbClick}></lightning-breadcrumb>
+                </template>
+              </lightning-breadcrumbs>
+            </div>
+            
+          </div>
+          <div class="slds-col">
+            <lightning-button-group>
+              <template if:false={showBackButton}>
+                <lightning-button label="Back" onclick={handleBackClick}></lightning-button>
+              </template>
+              <lightning-button label="Add Files" onclick={openFileUploadModal}></lightning-button>
+              <lightning-button label="Save"></lightning-button>
+          </lightning-button-group>
+          </div>
+          
           
         </div>
         <!-- Slot to implement folder struture -->
@@ -47,6 +43,7 @@
           key-field="id"
           data={someData}
           columns={datatableColumns}
+          hide-checkbox-column="true"
         ></c-custom-datatable>
       </div>
     </div>
@@ -55,6 +52,31 @@
     <div class="exampleHolder">
       <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
     </div>
+  </template>
+  <template if:true={showFileUploadModal}>
+
+  
+  <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open">
+    <div class="slds-modal__container">
+    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
+    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+    </svg>
+    <span class="slds-assistive-text">Cancel and close</span>
+    </button>
+    <div class="slds-modal__header">
+    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Add Files</h1>
+    </div>
+    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+      <lightning-input type="file" onchange={addFiles}></lightning-input>
+    </div>
+    <div class="slds-modal__footer">
+    <button class="slds-button slds-button_neutral" aria-label="Cancel and close" onclick={closeFileUploadModal}>Close</button>
+    <button class="slds-button slds-button_brand" onclick={uploadFiles}>Upload</button>
+    </div>
+    </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
   </template>
     
     
