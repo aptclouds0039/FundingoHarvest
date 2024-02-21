@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Decline_Reason__c</fullName>
+    <externalId>false</externalId>
+    <label>Decline Reason</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Not Qualified - Background</fullName>
+                <default>false</default>
+                <label>Not Qualified - Background</label>
+            </value>
+            <value>
+                <fullName>Not Qualified - Industry</fullName>
+                <default>false</default>
+                <label>Not Qualified - Industry</label>
+            </value>
+            <value>
+                <fullName>Not Qualified - Related Searches</fullName>
+                <default>false</default>
+                <label>Not Qualified - Related Searches</label>
+            </value>
+            <value>
+                <fullName>Not Qualified - Bankruptcy</fullName>
+                <default>false</default>
+                <label>Not Qualified - Bankruptcy</label>
+            </value>
+            <value>
+                <fullName>Not Qualified - Criminal Felony</fullName>
+                <default>false</default>
+                <label>Not Qualified - Criminal Felony</label>
+            </value>
+            <value>
+                <fullName>Not Qualified - Risky</fullName>
+                <default>false</default>
+                <label>Not Qualified - Risky</label>
+            </value>
+            <value>
+                <fullName>Not Qualified - Other</fullName>
+                <default>false</default>
+                <label>Not Qualified - Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

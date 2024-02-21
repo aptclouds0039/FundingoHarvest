@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stage_Status__c</fullName>
+    <externalId>false</externalId>
+    <label>Stage Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Put on Hold</fullName>
+                <default>false</default>
+                <label>Put on Hold</label>
+            </value>
+            <value>
+                <fullName>Further Analysis/Negotiation</fullName>
+                <default>false</default>
+                <label>Further Analysis/Negotiation</label>
+            </value>
+            <value>
+                <fullName>Looks Good</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Looks Good</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
